@@ -1,0 +1,18 @@
+Attari Saroba,Chungi Amar Sidhu
+Attari Saroba,Gajjumata
+Azadi Chowk,Canal
+Azadi Chowk,Railway Station
+Azadi Chowk,Timber Market
+Canal,Ichra
+Canal,MAO College
+Chungi Amar Sidhu,Qainchi
+Ichra,Kalma Chowk
+Ichra,Railway Station
+Ichra,Shama
+Kalma Chowk,Qainchi
+Kalma Chowk,Shama
+MAO College,Railway Station
+MAO College,Shama
+Niazi Chowk,Salamatpura
+Niazi Chowk,Timber Market
+Salamatpura,Shahdara
