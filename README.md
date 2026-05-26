@@ -261,17 +261,6 @@ DFS execution time: 0 ms
 - Replace vector neighbor lists with `unordered_set` for faster duplicate checks.
 - Add unit tests for BFS, DFS, file parsing, duplicate routes, and invalid input.
 
-## Viva Preparation Points
-
-- A station is represented as a graph vertex.
-- A route is represented as an undirected weighted edge.
-- The adjacency list is memory-efficient for sparse graphs.
-- BFS gives the shortest path only when all edges are treated equally.
-- DFS is used for traversal, not shortest path.
-- The parent map in BFS is used to reconstruct the final route.
-- The visited map prevents cycles from causing infinite traversal.
-- The weighted adjacency list prepares the project for Dijkstra's Algorithm.
-
 ## Final Summary
 
 This project successfully demonstrates how a metro bus route network can be represented using graph data structures in C++. It implements station and route management, persistent file storage, BFS shortest-path search, DFS traversal, duplicate prevention, and basic validation. The current implementation is strong for a DSA semester project and can be extended into a more advanced route planner by adding Dijkstra's Algorithm for weighted shortest paths.
