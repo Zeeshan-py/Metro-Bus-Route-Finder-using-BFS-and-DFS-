@@ -36,16 +36,20 @@ The compiled executable is intentionally not included in the repository. Build o
 
 ## Graph Representation
 
-The project stores the metro network using two adjacency lists:
+The project stores the metro network using one weighted adjacency list:
 
 ```cpp
-std::unordered_map<std::string, std::vector<std::string>> adjList;
 std::unordered_map<std::string, std::vector<std::pair<std::string, int>>> weightedAdjList;
 ```
 
-`adjList` is used for BFS, DFS, and simple display.
+Each key is a station name. Each value is a list of connected stations with their route weight.
 
-`weightedAdjList` stores edge weights for future algorithms such as Dijkstra's Algorithm.
+Example:
+
+```text
+Shahdara -> Salamatpura(1)
+Salamatpura -> Shahdara(1), Niazi Chowk(1)
+```
 
 The graph is undirected. When a route is added from station `A` to station `B`, the program stores both:
 
@@ -81,7 +85,7 @@ graph LR
 ## Features
 
 - Add metro stations
-- Connect stations with bidirectional routes
+- Connect stations with bidirectional weighted routes
 - Prevent duplicate stations
 - Prevent duplicate routes
 - Reject self-routes such as `A -> A`
@@ -117,7 +121,6 @@ The project uses `stations.txt` as persistent storage.
 Supported formats:
 
 ```text
-Station1,Station2
 Station1,Station2,Weight
 Standalone Station
 ```
@@ -125,12 +128,12 @@ Standalone Station
 Examples:
 
 ```text
-Shahdara,Salamatpura
+Shahdara,Salamatpura,1
 Salamatpura,Niazi Chowk,3
 Isolated Station
 ```
 
-Invalid weights such as `0`, negative values, or non-numeric values are skipped during loading.
+Older two-column route lines such as `Station1,Station2` can still be loaded and are treated as weight `1`. New saves use the three-column weighted format. Invalid weights such as `0`, negative values, or non-numeric values are skipped during loading.
 
 ## BFS Explanation
 
@@ -146,7 +149,7 @@ Steps:
 6. Stop when the destination is found.
 7. Reconstruct the path using the parent map.
 
-Important note: BFS does not use route weights. It finds the route with the fewest station-to-station hops. For weighted shortest distance or weighted travel time, Dijkstra's Algorithm should be added.
+Important note: BFS reads neighbors from the weighted graph, but it does not compare weight values. It finds the route with the fewest station-to-station hops. For weighted shortest distance or weighted travel time, Dijkstra's Algorithm should be added.
 
 ## DFS Explanation
 
@@ -160,7 +163,7 @@ Steps:
 4. Continue until no unvisited neighbor remains.
 5. If disconnected components exist, start DFS again from the next unvisited station.
 
-The implementation covers disconnected graphs by looping over every station in the adjacency list.
+The implementation covers disconnected graphs by looping over every station in the weighted adjacency list.
 
 ## Validation and Safety
 
@@ -189,7 +192,7 @@ Let:
 |---|---:|---:|---|
 | Add station | O(1) average | O(1) | Uses `unordered_map` |
 | Check station | O(1) average | O(1) | Uses `unordered_map::find` |
-| Add route | O(d) | O(1) | Vector scan prevents duplicates |
+| Add weighted route | O(d) | O(1) | Vector scan prevents duplicate neighbors |
 | BFS shortest route | O(V + E) | O(V) | Finds shortest path by hop count |
 | DFS traversal | O(V + E) | O(V) | Includes recursion stack |
 | Load file | O(E * d) practical | O(V + E) | Each route checks for duplicates |
@@ -234,11 +237,11 @@ DFS execution time: 0 ms
 
 - Clear graph-based modeling of a real transport system.
 - Correct undirected route insertion.
-- Correct BFS shortest-path logic for unweighted hop count.
+- Correct BFS shortest-path logic for minimum hop count.
 - Correct DFS traversal with disconnected graph coverage.
 - Persistent storage through file handling.
 - Duplicate route prevention.
-- Weighted storage prepared for future algorithms.
+- Single weighted adjacency list used across the graph.
 - Modular structure with separate header and implementation files.
 
 ## Current Limitations

@@ -6,55 +6,51 @@
 #include <utility>
 #include <vector>
 
+using std::string;
+using std::unordered_map;
+using std::pair;
+using std::vector;
+
 class Graph {
 private:
-    // Stores each station and the stations directly connected to it.
-    std::unordered_map<std::string, std::vector<std::string>> adjList;
-
-    // Optional weighted adjacency list for future pathfinding upgrades.
-    std::unordered_map<std::string, std::vector<std::pair<std::string, int>>> weightedAdjList;
+    // Stores each station with its directly connected stations and route weights.
+    unordered_map<string, vector<pair<string, int>>> weightedAdjList;
 
     // Recursive helper used to perform DFS from a single station.
-    void dfsHelper(const std::string& stationName,
-                   std::unordered_map<std::string, bool>& visited,
-                   std::vector<std::string>& traversalOrder) const;
+    void dfsHelper(const string& stationName,
+                   unordered_map<string, bool>& visited,
+                   vector<string>& traversalOrder) const;
 
 public:
     // Removes all stations and routes from the graph.
     void clearGraph();
 
     // Adds a station to the metro map if it is not already present.
-    bool addStation(const std::string& stationName);
+    bool addStation(const string& stationName);
 
     // Checks whether a station exists in the metro map.
-    bool hasStation(const std::string& stationName) const;
+    bool hasStation(const string& stationName) const;
 
-    // Adds a bidirectional route between two stations.
+    // Adds a bidirectional weighted route.
     // If allowCreateStations is true, missing stations are created during file loading.
-    bool addRoute(const std::string& fromStation,
-                  const std::string& toStation,
-                  bool showMessage = true,
-                  bool allowCreateStations = false);
-
-    // Adds a bidirectional weighted route for future scalability.
-    bool addWeightedRoute(const std::string& fromStation,
-                          const std::string& toStation,
+    bool addWeightedRoute(const string& fromStation,
+                          const string& toStation,
                           int weight,
                           bool showMessage = true,
                           bool allowCreateStations = false);
 
-    // Loads routes from a text file where each line contains two station names.
-    bool loadRoutesFromFile(const std::string& fileName);
+    // Loads routes from a text file where each route line contains two stations and a weight.
+    bool loadRoutesFromFile(const string& fileName);
 
     // Saves the current metro graph to a text file using comma-separated routes.
-    bool saveRoutesToFile(const std::string& fileName) const;
+    bool saveRoutesToFile(const string& fileName) const;
 
     // Finds the shortest route between two stations using BFS.
-    std::vector<std::string> findShortestRoute(const std::string& startStation,
-                                               const std::string& destinationStation) const;
+    vector<string> findShortestRoute(const string& startStation,
+                                     const string& destinationStation) const;
 
     // Returns a full DFS traversal of the metro graph, including disconnected parts.
-    std::vector<std::string> depthFirstTraversal() const;
+    vector<string> depthFirstTraversal() const;
 
     // Displays the complete adjacency list representation of the metro map.
     void displayMap() const;

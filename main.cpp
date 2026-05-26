@@ -86,6 +86,27 @@ bool promptForStation(const std::string& prompt, std::string& station) {
     return true;
 }
 
+bool promptForWeight(int& weight) {
+    cout << "Enter route weight: ";
+    cin >> weight;
+
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Invalid weight. Please enter a positive number.\n";
+        return false;
+    }
+
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    if (weight <= 0) {
+        cout << "Weight must be greater than 0.\n";
+        return false;
+    }
+
+    return true;
+}
+
 int main() {
     Graph metroGraph;
     int choice = 0;
@@ -129,6 +150,7 @@ int main() {
         case 2: {
             std::string from;
             std::string to;
+            int weight = 0;
 
             if (!promptForStation("Enter starting station: ", from)) {
                 break;
@@ -138,7 +160,21 @@ int main() {
                 break;
             }
 
-            if (metroGraph.addRoute(from, to) && metroGraph.saveRoutesToFile(kDataFile)) {
+            if (from == to) {
+                std::cout << "A station cannot be connected to itself.\n";
+                break;
+            }
+
+            if (!metroGraph.hasStation(from) || !metroGraph.hasStation(to)) {
+                std::cout << "Invalid station name. Please add both stations before connecting them.\n";
+                break;
+            }
+
+            if (!promptForWeight(weight)) {
+                break;
+            }
+
+            if (metroGraph.addWeightedRoute(from, to, weight) && metroGraph.saveRoutesToFile(kDataFile)) {
                 std::cout << "Metro route saved.\n";
             }
             break;

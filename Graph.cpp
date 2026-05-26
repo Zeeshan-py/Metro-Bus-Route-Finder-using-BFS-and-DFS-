@@ -10,10 +10,6 @@
 namespace {
 using namespace std;
 
-bool containsNeighbor(const vector<string>& neighbors, const string& stationName) {
-    return find(neighbors.begin(), neighbors.end(), stationName) != neighbors.end();
-}
-
 bool containsWeightedNeighbor(const vector<pair<string, int>>& neighbors, const string& stationName, int& weight) {
     for (const auto& neighbor : neighbors) {
         if (neighbor.first == stationName) {
@@ -63,7 +59,6 @@ bool parseWeight(const string& text, int& weight) {
 }
 
 void Graph::clearGraph() {
-    adjList.clear();
     weightedAdjList.clear();
 }
 
@@ -78,18 +73,13 @@ bool Graph::addStation(const string& stationName) {
         return false;
     }
 
-    adjList[stationName];
     weightedAdjList[stationName];
     cout << "Station added successfully.\n";
     return true;
 }
 
 bool Graph::hasStation(const string& stationName) const {
-    return adjList.find(stationName) != adjList.end();
-}
-
-bool Graph::addRoute(const string& fromStation, const string& toStation, bool showMessage, bool allowCreateStations) {
-    return addWeightedRoute(fromStation, toStation, 1, showMessage, allowCreateStations);
+    return weightedAdjList.find(stationName) != weightedAdjList.end();
 }
 
 bool Graph::addWeightedRoute(const string& fromStation, const string& toStation, int weight, bool showMessage, bool allowCreateStations) {
@@ -110,8 +100,6 @@ bool Graph::addWeightedRoute(const string& fromStation, const string& toStation,
 
     if (allowCreateStations) {
         // File loading can rebuild the graph from raw routes, so missing stations are created here.
-        adjList[fromStation];
-        adjList[toStation];
         weightedAdjList[fromStation];
         weightedAdjList[toStation];
     } else if (!hasStation(fromStation) || !hasStation(toStation)) {
@@ -119,21 +107,9 @@ bool Graph::addWeightedRoute(const string& fromStation, const string& toStation,
         return false;
     }
 
-    bool routeExists = containsNeighbor(adjList[fromStation], toStation);
     int existingWeight = 0;
     bool weightedRouteExists = containsWeightedNeighbor(weightedAdjList[fromStation], toStation, existingWeight);
 
-    // Add the destination station to the source station's neighbor list.
-    if (!containsNeighbor(adjList[fromStation], toStation)) {
-        adjList[fromStation].push_back(toStation);
-    }
-
-    // Add the source station to the destination station's neighbor list.
-    if (!containsNeighbor(adjList[toStation], fromStation)) {
-        adjList[toStation].push_back(fromStation);
-    }
-
-    // Keep the weighted graph in sync for future shortest-path upgrades.
     if (weightedRouteExists) {
         for (auto& neighbor : weightedAdjList[fromStation]) {
             if (neighbor.first == toStation) {
@@ -154,9 +130,9 @@ bool Graph::addWeightedRoute(const string& fromStation, const string& toStation,
     }
 
     if (showMessage) {
-        if (routeExists && weightedRouteExists && existingWeight == weight) {
+        if (weightedRouteExists && existingWeight == weight) {
             cout << "Route already exists.\n";
-        } else if (routeExists) {
+        } else if (weightedRouteExists) {
             cout << "Route updated successfully.\n";
         } else {
             cout << "Route added successfully.\n";
@@ -198,7 +174,6 @@ bool Graph::loadRoutesFromFile(const string& fileName) {
         if (!getline(lineStream, to, ',')) {
             from = trim(from);
             if (!from.empty()) {
-                adjList[from];
                 weightedAdjList[from];
                 loadedStations++;
             }
@@ -256,7 +231,7 @@ bool Graph::saveRoutesToFile(const string& fileName) const {
 
     set<string> uniqueLines;
 
-    for (const auto& stationEntry : adjList) {
+    for (const auto& stationEntry : weightedAdjList) {
         const string& stationName = stationEntry.first;
 
         if (stationEntry.second.empty()) {
@@ -264,19 +239,12 @@ bool Graph::saveRoutesToFile(const string& fileName) const {
             continue;
         }
 
-        for (const string& neighbor : stationEntry.second) {
-            if (stationName < neighbor) {
-                int weight = 1;
-                auto weightedStationIterator = weightedAdjList.find(stationName);
-                if (weightedStationIterator != weightedAdjList.end()) {
-                    containsWeightedNeighbor(weightedStationIterator->second, neighbor, weight);
-                }
+        for (const auto& route : stationEntry.second) {
+            const string& neighbor = route.first;
+            const int weight = route.second;
 
-                if (weight == 1) {
-                    uniqueLines.insert(stationName + "," + neighbor);
-                } else {
-                    uniqueLines.insert(stationName + "," + neighbor + "," + to_string(weight));
-                }
+            if (stationName < neighbor) {
+                uniqueLines.insert(stationName + "," + neighbor + "," + to_string(weight));
             }
         }
     }
@@ -313,12 +281,14 @@ std::vector<string> Graph::findShortestRoute(const string& startStation, const s
             break;
         }
 
-        auto stationIterator = adjList.find(currentStation);
-        if (stationIterator == adjList.end()) {
+        auto stationIterator = weightedAdjList.find(currentStation);
+        if (stationIterator == weightedAdjList.end()) {
             continue;
         }
 
-        for (const string& neighbor : stationIterator->second) {
+        for (const auto& route : stationIterator->second) {
+            const string& neighbor = route.first;
+
             if (visited.find(neighbor) == visited.end()) {
                 visited[neighbor] = true;
                 parent[neighbor] = currentStation;
@@ -352,12 +322,14 @@ void Graph::dfsHelper(const string& stationName, unordered_map<string, bool>& vi
     visited[stationName] = true;
     traversalOrder.push_back(stationName);
 
-    auto stationIterator = adjList.find(stationName);
-    if (stationIterator == adjList.end()) {
+    auto stationIterator = weightedAdjList.find(stationName);
+    if (stationIterator == weightedAdjList.end()) {
         return;
     }
 
-    for (const string& neighbor : stationIterator->second) {
+    for (const auto& route : stationIterator->second) {
+        const string& neighbor = route.first;
+
         if (visited.find(neighbor) == visited.end()) {
             dfsHelper(neighbor, visited, traversalOrder);
         }
@@ -369,13 +341,13 @@ void Graph::dfsHelper(const string& stationName, unordered_map<string, bool>& vi
 std::vector<string> Graph::depthFirstTraversal() const {
     vector<string> traversal;
 
-    if (adjList.empty()) {
+    if (weightedAdjList.empty()) {
         return traversal;
     }
 
     unordered_map<string, bool> visited;
 
-    for (const auto& station : adjList) {
+    for (const auto& station : weightedAdjList) {
         if (visited.find(station.first) == visited.end()) {
             dfsHelper(station.first, visited, traversal);
         }
@@ -385,7 +357,7 @@ std::vector<string> Graph::depthFirstTraversal() const {
 }
 
 void Graph::displayMap() const {
-    if (adjList.empty()) {
+    if (weightedAdjList.empty()) {
         cout << "Metro map is empty. Add stations first.\n";
         return;
     }
@@ -394,9 +366,9 @@ void Graph::displayMap() const {
     cout << "--------------------------\n";
 
     vector<string> stations;
-    stations.reserve(adjList.size());
+    stations.reserve(weightedAdjList.size());
 
-    for (const auto& station : adjList) {
+    for (const auto& station : weightedAdjList) {
         stations.push_back(station.first);
     }
 
@@ -405,10 +377,10 @@ void Graph::displayMap() const {
     for (const string& stationName : stations) {
         cout << stationName << " -> ";
 
-        const auto& neighbors = adjList.at(stationName);
+        const auto& neighbors = weightedAdjList.at(stationName);
 
-        for (const string& neighbor : neighbors) {
-            cout << neighbor << " ";
+        for (const auto& route : neighbors) {
+            cout << route.first << "(" << route.second << ") ";
         }
 
         cout << '\n';
@@ -420,15 +392,15 @@ void Graph::displayMap() const {
     for (const string& stationName : stations) {
         cout << "[" << stationName << "]\n";
 
-        const auto& neighbors = adjList.at(stationName);
+        const auto& neighbors = weightedAdjList.at(stationName);
 
         if (neighbors.empty()) {
             cout << "   |-- (no direct routes)\n";
             continue;
         }
 
-        for (const string& neighbor : neighbors) {
-            cout << "   |-- " << neighbor << '\n';
+        for (const auto& route : neighbors) {
+            cout << "   |-- " << route.first << " (weight: " << route.second << ")\n";
         }
     }
 }
