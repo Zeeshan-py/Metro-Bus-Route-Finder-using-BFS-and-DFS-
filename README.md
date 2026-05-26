@@ -47,8 +47,8 @@ Each key is a station name. Each value is a list of connected stations with thei
 Example:
 
 ```text
-Shahdara -> Salamatpura(1)
-Salamatpura -> Shahdara(1), Niazi Chowk(1)
+Shahdara -> Niazi Chowk(1)
+Niazi Chowk -> Shahdara(1), Timber Market(1)
 ```
 
 The graph is undirected. When a route is added from station `A` to station `B`, the program stores both:
@@ -62,24 +62,32 @@ B -> A
 
 ```mermaid
 graph LR
-    Shahdara --- Salamatpura
-    Salamatpura --- Niazi_Chowk
+    Shahdara --- Niazi_Chowk
     Niazi_Chowk --- Timber_Market
     Timber_Market --- Azadi_Chowk
-    Azadi_Chowk --- Railway_Station
-    Azadi_Chowk --- Canal
-    Railway_Station --- MAO_College
-    Railway_Station --- Ichra
-    MAO_College --- Canal
-    MAO_College --- Shama
-    Canal --- Ichra
-    Ichra --- Shama
-    Ichra --- Kalma_Chowk
-    Shama --- Kalma_Chowk
-    Kalma_Chowk --- Qainchi
-    Qainchi --- Chungi_Amar_Sidhu
-    Chungi_Amar_Sidhu --- Attari_Saroba
-    Attari_Saroba --- Gajjumata
+    Azadi_Chowk --- Bhatti_Chowk
+    Bhatti_Chowk --- Katchery
+    Katchery --- Civil_Secretariat
+    Civil_Secretariat --- MAO_College
+    MAO_College --- Janazgah
+    Janazgah --- Qartaba_Chowk
+    Qartaba_Chowk --- Shama
+    Shama --- Ichhra
+    Ichhra --- Canal
+    Canal --- Qaddafi_Stadium
+    Qaddafi_Stadium --- Kalma_Chowk
+    Kalma_Chowk --- Model_Town
+    Model_Town --- Naseerabad
+    Naseerabad --- Ittefaq_Hospital
+    Ittefaq_Hospital --- Qainchi
+    Qainchi --- Ghazi_Chowk
+    Ghazi_Chowk --- Chungi_Amar_Sidhu
+    Chungi_Amar_Sidhu --- Kamahan
+    Kamahan --- Attari_Saroba
+    Attari_Saroba --- Nishtar
+    Nishtar --- Youhanabad
+    Youhanabad --- Dulu_Khurd
+    Dulu_Khurd --- Gajjumata
 ```
 
 ## Features
@@ -128,8 +136,8 @@ Standalone Station
 Examples:
 
 ```text
-Shahdara,Salamatpura,1
-Salamatpura,Niazi Chowk,3
+Shahdara,Niazi Chowk,1
+Niazi Chowk,Timber Market,1
 Isolated Station
 ```
 
@@ -222,14 +230,14 @@ Run on Linux/macOS:
 ## Example BFS Output
 
 ```text
-Shortest route (12 stations): Shahdara -> Salamatpura -> Niazi Chowk -> Timber Market -> Azadi Chowk -> Canal -> Ichra -> Kalma Chowk -> Qainchi -> Chungi Amar Sidhu -> Attari Saroba -> Gajjumata
+Shortest route (27 stations): Shahdara -> Niazi Chowk -> Timber Market -> Azadi Chowk -> Bhatti Chowk -> Katchery -> Civil Secretariat -> MAO College -> Janazgah -> Qartaba Chowk -> Shama -> Ichhra -> Canal -> Qaddafi Stadium -> Kalma Chowk -> Model Town -> Naseerabad -> Ittefaq Hospital -> Qainchi -> Ghazi Chowk -> Chungi Amar Sidhu -> Kamahan -> Attari Saroba -> Nishtar -> Youhanabad -> Dulu Khurd -> Gajjumata
 BFS execution time: 1 ms
 ```
 
 ## Example DFS Output
 
 ```text
-DFS traversal: Shahdara -> Salamatpura -> Niazi Chowk -> Timber Market -> Azadi Chowk -> Canal -> Ichra -> Kalma Chowk -> Qainchi -> Chungi Amar Sidhu -> Attari Saroba -> Gajjumata -> Shama -> MAO College -> Railway Station
+DFS traversal: Shahdara -> Niazi Chowk -> Timber Market -> Azadi Chowk -> Bhatti Chowk -> Katchery -> Civil Secretariat -> MAO College -> Janazgah -> Qartaba Chowk -> Shama -> Ichhra -> Canal -> Qaddafi Stadium -> Kalma Chowk -> Model Town -> Naseerabad -> Ittefaq Hospital -> Qainchi -> Ghazi Chowk -> Chungi Amar Sidhu -> Kamahan -> Attari Saroba -> Nishtar -> Youhanabad -> Dulu Khurd -> Gajjumata
 DFS execution time: 0 ms
 ```
 

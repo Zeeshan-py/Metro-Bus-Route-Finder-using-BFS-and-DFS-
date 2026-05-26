@@ -1,18 +1,26 @@
-Attari Saroba,Chungi Amar Sidhu,1
-Attari Saroba,Gajjumata,1
-Azadi Chowk,Canal,1
-Azadi Chowk,Railway Station,1
-Azadi Chowk,Timber Market,1
-Canal,Ichra,1
-Canal,MAO College,1
-Chungi Amar Sidhu,Qainchi,1
-Ichra,Kalma Chowk,1
-Ichra,Railway Station,1
-Ichra,Shama,1
-Kalma Chowk,Qainchi,1
-Kalma Chowk,Shama,1
-MAO College,Railway Station,1
-MAO College,Shama,1
-Niazi Chowk,Salamatpura,1
+Shahdara,Niazi Chowk,1
 Niazi Chowk,Timber Market,1
-Salamatpura,Shahdara,1
+Timber Market,Azadi Chowk,1
+Azadi Chowk,Bhatti Chowk,1
+Bhatti Chowk,Katchery,1
+Katchery,Civil Secretariat,1
+Civil Secretariat,MAO College,1
+MAO College,Janazgah,1
+Janazgah,Qartaba Chowk,1
+Qartaba Chowk,Shama,1
+Shama,Ichhra,1
+Ichhra,Canal,1
+Canal,Qaddafi Stadium,1
+Qaddafi Stadium,Kalma Chowk,1
+Kalma Chowk,Model Town,1
+Model Town,Naseerabad,1
+Naseerabad,Ittefaq Hospital,1
+Ittefaq Hospital,Qainchi,1
+Qainchi,Ghazi Chowk,1
+Ghazi Chowk,Chungi Amar Sidhu,1
+Chungi Amar Sidhu,Kamahan,1
+Kamahan,Attari Saroba,1
+Attari Saroba,Nishtar,1
+Nishtar,Youhanabad,1
+Youhanabad,Dulu Khurd,1
+Dulu Khurd,Gajjumata,1
