@@ -1,64 +1,105 @@
 # Metro Bus Route Finder using BFS and DFS
 
-A beginner-friendly C++ DSA project that models the Lahore Metrobus system as a graph using an adjacency list.
+A C++ DSA project that models the Lahore Metro Bus System as an undirected weighted graph. Each station is a vertex, and each route between two stations is a bidirectional edge. The project demonstrates graph representation, BFS shortest-path traversal, DFS traversal, file handling, STL containers, recursion, and object-oriented programming.
+
+## Project Objective
+
+The objective of this project is to build a console-based route finder for a metro bus network. The system allows users to add stations, connect stations, save/load route data, display the graph, find the shortest route by hop count using BFS, and perform a full DFS traversal of the metro network.
+
+This project is suitable for a DSA course submission because it connects a real-world transport problem with core graph concepts.
+
+## Core Concepts Used
+
+- C++
+- Object-Oriented Programming
+- Undirected graph
+- Weighted graph storage
+- Adjacency list representation
+- Breadth First Search
+- Depth First Search
+- Recursion
+- File handling
+- STL containers
+- Runtime measurement with `clock()`
+
+## File Structure
+
+| File | Purpose |
+|---|---|
+| `main.cpp` | Menu-driven console interface and user input handling |
+| `Graph.h` | Graph class declaration |
+| `Graph.cpp` | Graph class implementation, BFS, DFS, file handling, display logic |
+| `stations.txt` | Persistent metro station and route data |
+| `README.md` | Complete project report and documentation |
+
+The compiled executable is intentionally not included in the repository. Build outputs such as `metro.exe` should be regenerated locally.
+
+## Graph Representation
+
+The project stores the metro network using two adjacency lists:
+
+```cpp
+std::unordered_map<std::string, std::vector<std::string>> adjList;
+std::unordered_map<std::string, std::vector<std::pair<std::string, int>>> weightedAdjList;
+```
+
+`adjList` is used for BFS, DFS, and simple display.
+
+`weightedAdjList` stores edge weights for future algorithms such as Dijkstra's Algorithm.
+
+The graph is undirected. When a route is added from station `A` to station `B`, the program stores both:
+
+```text
+A -> B
+B -> A
+```
+
+## Sample Metro Graph
+
+```mermaid
+graph LR
+    Shahdara --- Salamatpura
+    Salamatpura --- Niazi_Chowk
+    Niazi_Chowk --- Timber_Market
+    Timber_Market --- Azadi_Chowk
+    Azadi_Chowk --- Railway_Station
+    Azadi_Chowk --- Canal
+    Railway_Station --- MAO_College
+    Railway_Station --- Ichra
+    MAO_College --- Canal
+    MAO_College --- Shama
+    Canal --- Ichra
+    Ichra --- Shama
+    Ichra --- Kalma_Chowk
+    Shama --- Kalma_Chowk
+    Kalma_Chowk --- Qainchi
+    Qainchi --- Chungi_Amar_Sidhu
+    Chungi_Amar_Sidhu --- Attari_Saroba
+    Attari_Saroba --- Gajjumata
+```
 
 ## Features
 
 - Add metro stations
 - Connect stations with bidirectional routes
-- Automatically load route data from `stations.txt` at startup
-- Save graph data back to `stations.txt`
-- Find the shortest route using BFS
-- Display a full DFS traversal
-- Handle invalid station input safely
+- Prevent duplicate stations
 - Prevent duplicate routes
-- Show a simple ASCII-style metro visualization
-- Measure BFS and DFS execution time with `clock()`
-- Support optional weighted route data for future upgrades
-
-## Data Structures Used
-
-- `unordered_map<string, vector<string>>` for the adjacency list
-- `queue` for BFS
-- `unordered_map` for visited tracking and parent reconstruction
-- recursion for DFS
-- `stringstream` for parsing comma-separated file data
-- `clock()` for simple runtime measurement
-
-## File Handling
-
-The project uses a simple text file named `stations.txt`.
-
-Each line stores either:
-
-- a route in the format `Station1,Station2`
-- a weighted route in the format `Station1,Station2,Weight`
-- or a standalone station name for isolated stations
-
-## Complexity
-
-- BFS time complexity: `O(V + E)`
-- BFS space complexity: `O(V)`
-- DFS time complexity: `O(V + E)`
-- DFS space complexity: `O(V)`
-- File save/load time complexity: `O(V + E)` for a full graph pass
-
-## How to Run
-
-1. Compile the project:
-
-```bash
-g++ main.cpp Graph.cpp -std=c++17 -o metro.exe
-```
-
-2. Run the program:
-
-```bash
-metro.exe
-```
+- Reject self-routes such as `A -> A`
+- Store weighted route data
+- Load metro data from `stations.txt`
+- Save updated graph data to `stations.txt`
+- Find shortest route by hop count using BFS
+- Perform full DFS traversal, including disconnected components
+- Display adjacency-list map
+- Display simple ASCII-style map
+- Handle missing and invalid station names safely
+- Trim user input to avoid accidental duplicate names with spaces
+- Validate route weights while loading file data
+- Measure BFS and DFS execution time
 
 ## Menu Options
 
+```text
 1. Add Station
 2. Connect Stations
 3. Display Metro Map
@@ -67,33 +108,170 @@ metro.exe
 6. Save Data
 7. Reload Data
 8. Exit
+```
 
-## Visual Output
+## File Format
 
-The map output includes both:
+The project uses `stations.txt` as persistent storage.
 
-- a normal adjacency-list view
-- a simple ASCII-style station listing for easier viva explanation
+Supported formats:
 
-## Sample Dataset
+```text
+Station1,Station2
+Station1,Station2,Weight
+Standalone Station
+```
 
-The project is seeded with Lahore Metrobus routes such as:
+Examples:
 
-- Shahdara -> Salamatpura
-- Salamatpura -> Niazi Chowk
-- Niazi Chowk -> Timber Market
-- Timber Market -> Azadi Chowk
-- Azadi Chowk -> Railway Station
-- Railway Station -> MAO College
-- MAO College -> Canal
-- Canal -> Ichra
-- Ichra -> Shama
-- Shama -> Kalma Chowk
-- Kalma Chowk -> Qainchi
-- Qainchi -> Chungi Amar Sidhu
-- Chungi Amar Sidhu -> Attari Saroba
-- Attari Saroba -> Gajjumata
+```text
+Shahdara,Salamatpura
+Salamatpura,Niazi Chowk,3
+Isolated Station
+```
 
-Extra alternate connections are included to make BFS and DFS traversal more realistic.
+Invalid weights such as `0`, negative values, or non-numeric values are skipped during loading.
 
-# Metro-Bus-Route-Finder-using-BFS-and-DFS-
+## BFS Explanation
+
+BFS is used to find the shortest route between two stations by number of edges, also called hop count.
+
+Steps:
+
+1. Start from the source station.
+2. Push the source station into a queue.
+3. Mark it as visited.
+4. Visit neighboring stations level by level.
+5. Store each station's parent.
+6. Stop when the destination is found.
+7. Reconstruct the path using the parent map.
+
+Important note: BFS does not use route weights. It finds the route with the fewest station-to-station hops. For weighted shortest distance or weighted travel time, Dijkstra's Algorithm should be added.
+
+## DFS Explanation
+
+DFS is used to traverse the graph deeply using recursion.
+
+Steps:
+
+1. Start from an unvisited station.
+2. Mark it as visited.
+3. Recursively visit each unvisited neighbor.
+4. Continue until no unvisited neighbor remains.
+5. If disconnected components exist, start DFS again from the next unvisited station.
+
+The implementation covers disconnected graphs by looping over every station in the adjacency list.
+
+## Validation and Safety
+
+The project includes the following checks:
+
+- Empty station names are rejected.
+- Whitespace around user input is removed.
+- Duplicate stations are rejected.
+- Duplicate routes are not inserted again.
+- Existing weighted routes can be updated.
+- Self-routes are rejected.
+- Missing stations are rejected during manual route creation.
+- Invalid file weights are skipped.
+- BFS safely handles missing, isolated, same-source-destination, and unreachable station cases.
+- DFS uses visited tracking to avoid infinite recursion in cyclic graphs.
+
+## Complexity Analysis
+
+Let:
+
+- `V` = number of stations
+- `E` = number of routes
+- `d` = degree of a station
+
+| Operation | Time Complexity | Space Complexity | Notes |
+|---|---:|---:|---|
+| Add station | O(1) average | O(1) | Uses `unordered_map` |
+| Check station | O(1) average | O(1) | Uses `unordered_map::find` |
+| Add route | O(d) | O(1) | Vector scan prevents duplicates |
+| BFS shortest route | O(V + E) | O(V) | Finds shortest path by hop count |
+| DFS traversal | O(V + E) | O(V) | Includes recursion stack |
+| Load file | O(E * d) practical | O(V + E) | Each route checks for duplicates |
+| Save file | O(E log E) | O(E) | Uses `set` to keep saved routes unique |
+| Display map | O(V log V + E) | O(V) | Stations are sorted before display |
+
+## How to Compile and Run
+
+Compile:
+
+```bash
+g++ main.cpp Graph.cpp -std=c++17 -Wall -Wextra -pedantic -o metro.exe
+```
+
+Run on Windows:
+
+```bash
+metro.exe
+```
+
+Run on Linux/macOS:
+
+```bash
+./metro
+```
+
+## Example BFS Output
+
+```text
+Shortest route (12 stations): Shahdara -> Salamatpura -> Niazi Chowk -> Timber Market -> Azadi Chowk -> Canal -> Ichra -> Kalma Chowk -> Qainchi -> Chungi Amar Sidhu -> Attari Saroba -> Gajjumata
+BFS execution time: 1 ms
+```
+
+## Example DFS Output
+
+```text
+DFS traversal: Shahdara -> Salamatpura -> Niazi Chowk -> Timber Market -> Azadi Chowk -> Canal -> Ichra -> Kalma Chowk -> Qainchi -> Chungi Amar Sidhu -> Attari Saroba -> Gajjumata -> Shama -> MAO College -> Railway Station
+DFS execution time: 0 ms
+```
+
+## Strengths
+
+- Clear graph-based modeling of a real transport system.
+- Correct undirected route insertion.
+- Correct BFS shortest-path logic for unweighted hop count.
+- Correct DFS traversal with disconnected graph coverage.
+- Persistent storage through file handling.
+- Duplicate route prevention.
+- Weighted storage prepared for future algorithms.
+- Modular structure with separate header and implementation files.
+
+## Current Limitations
+
+- BFS does not calculate weighted shortest paths.
+- DFS is recursive, so extremely large graphs could risk stack overflow.
+- Route insertion uses vectors, so duplicate checks are linear in station degree.
+- There is no route deletion feature.
+- There is no case-insensitive station matching.
+- The console UI is simple and text-based.
+
+## Future Improvements
+
+- Add Dijkstra's Algorithm for shortest route by distance, time, or fare.
+- Add Prim's or Kruskal's Algorithm to demonstrate minimum spanning tree concepts.
+- Add route deletion and station deletion.
+- Add case-insensitive search.
+- Add station suggestions for misspelled names.
+- Store latitude/longitude data for real map visualization.
+- Replace vector neighbor lists with `unordered_set` for faster duplicate checks.
+- Add unit tests for BFS, DFS, file parsing, duplicate routes, and invalid input.
+
+## Viva Preparation Points
+
+- A station is represented as a graph vertex.
+- A route is represented as an undirected weighted edge.
+- The adjacency list is memory-efficient for sparse graphs.
+- BFS gives the shortest path only when all edges are treated equally.
+- DFS is used for traversal, not shortest path.
+- The parent map in BFS is used to reconstruct the final route.
+- The visited map prevents cycles from causing infinite traversal.
+- The weighted adjacency list prepares the project for Dijkstra's Algorithm.
+
+## Final Summary
+
+This project successfully demonstrates how a metro bus route network can be represented using graph data structures in C++. It implements station and route management, persistent file storage, BFS shortest-path search, DFS traversal, duplicate prevention, and basic validation. The current implementation is strong for a DSA semester project and can be extended into a more advanced route planner by adding Dijkstra's Algorithm for weighted shortest paths.

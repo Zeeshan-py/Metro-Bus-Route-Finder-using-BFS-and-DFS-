@@ -7,64 +7,79 @@
 #include "Graph.h"
 
 namespace {
-const std::string kDataFile = "stations.txt";
+using namespace std;
+
+const string kDataFile = "stations.txt";
+
+string trim(const string& text) {
+    const string whitespace = " \t\r\n";
+    const size_t first = text.find_first_not_of(whitespace);
+
+    if (first == string::npos) {
+        return "";
+    }
+
+    const size_t last = text.find_last_not_of(whitespace);
+    return text.substr(first, last - first + 1);
+}
 }
 
 void printRoute(const std::vector<std::string>& route) {
     if (route.empty()) {
-        std::cout << "No route found between the selected stations.\n";
+        cout << "No route found between the selected stations.\n";
         return;
     }
 
-    std::cout << "Shortest route (" << route.size() << " stations): ";
+    cout << "Shortest route (" << route.size() << " stations): ";
 
-    for (std::size_t i = 0; i < route.size(); ++i) {
-        std::cout << route[i];
+    for (size_t i = 0; i < route.size(); ++i) {
+        cout << route[i];
 
         if (i + 1 < route.size()) {
-            std::cout << " -> ";
+            cout << " -> ";
         }
     }
 
-    std::cout << '\n';
+    cout << '\n';
 }
 
 void printBanner() {
-    std::cout << "\n========================================\n";
-    std::cout << "   METRO BUS ROUTE FINDER - LAHORE\n";
-    std::cout << "========================================\n";
+    cout << "\n========================================\n";
+    cout << "   METRO BUS ROUTE FINDER - LAHORE\n";
+    cout << "========================================\n";
 }
 
 void printElapsedTime(const std::string& label, clock_t startTime, clock_t endTime) {
     const double elapsedMilliseconds = 1000.0 * static_cast<double>(endTime - startTime) / CLOCKS_PER_SEC;
-    std::cout << label << " execution time: " << elapsedMilliseconds << " ms\n";
+    cout << label << " execution time: " << elapsedMilliseconds << " ms\n";
 }
 
 void printTraversal(const std::vector<std::string>& traversal) {
     if (traversal.empty()) {
-        std::cout << "Metro map is empty. Add stations first.\n";
+        cout << "Metro map is empty. Add stations first.\n";
         return;
     }
 
-    std::cout << "DFS traversal: ";
+    cout << "DFS traversal: ";
 
-    for (std::size_t i = 0; i < traversal.size(); ++i) {
-        std::cout << traversal[i];
+    for (size_t i = 0; i < traversal.size(); ++i) {
+        cout << traversal[i];
 
         if (i + 1 < traversal.size()) {
-            std::cout << " -> ";
+            cout << " -> ";
         }
     }
 
-    std::cout << '\n';
+    cout << '\n';
 }
 
 bool promptForStation(const std::string& prompt, std::string& station) {
-    std::cout << prompt;
-    std::getline(std::cin, station);
+    cout << prompt;
+    std::getline(cin, station);
+    station = trim(station);
 
     if (station.empty()) {
-        std::cout << "Station name cannot be empty.\n";
+        cout << "Station name cannot be empty.\n";
         return false;
     }
 
@@ -105,9 +120,9 @@ int main() {
         case 1: {
             std::string station;
             if (promptForStation("Enter station name: ", station)) {
-                metroGraph.addStation(station);
-                metroGraph.saveRoutesToFile(kDataFile);
-                std::cout << "Metro station saved.\n";
+                if (metroGraph.addStation(station) && metroGraph.saveRoutesToFile(kDataFile)) {
+                    std::cout << "Metro station saved.\n";
+                }
             }
             break;
         }
@@ -123,9 +138,9 @@ int main() {
                 break;
             }
 
-            metroGraph.addRoute(from, to);
-            metroGraph.saveRoutesToFile(kDataFile);
-            std::cout << "Metro route saved.\n";
+            if (metroGraph.addRoute(from, to) && metroGraph.saveRoutesToFile(kDataFile)) {
+                std::cout << "Metro route saved.\n";
+            }
             break;
         }
         case 3:
@@ -166,8 +181,9 @@ int main() {
             metroGraph.saveRoutesToFile(kDataFile);
             break;
         case 7:
-            metroGraph.loadRoutesFromFile(kDataFile);
-            std::cout << "Metro data reloaded from file.\n";
+            if (metroGraph.loadRoutesFromFile(kDataFile)) {
+                std::cout << "Metro data reloaded from file.\n";
+            }
             break;
         case 8:
             std::cout << "Exiting program.\n";
