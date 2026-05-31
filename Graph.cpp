@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <limits>
 #include <queue>
 #include <sstream>
 #include <set>
@@ -316,6 +318,77 @@ std::vector<string> Graph::findShortestRoute(const string& startStation, const s
 
     reverse(route.begin(), route.end());
     return route;
+}
+
+pair<vector<string>, int> Graph::findShortestWeightedRoute(const string& startStation, const string& destinationStation) const {
+    vector<string> emptyRoute;
+
+    if (!hasStation(startStation) || !hasStation(destinationStation)) {
+        return {emptyRoute, 0};
+    }
+
+    unordered_map<string, int> distance;
+    unordered_map<string, string> parent;
+
+    for (const auto& station : weightedAdjList) {
+        distance[station.first] = numeric_limits<int>::max();
+    }
+
+    using QueueItem = pair<int, string>;
+    priority_queue<QueueItem, vector<QueueItem>, greater<QueueItem>> stationsToVisit;
+
+    distance[startStation] = 0;
+    stationsToVisit.push({0, startStation});
+
+    while (!stationsToVisit.empty()) {
+        const int currentDistance = stationsToVisit.top().first;
+        const string currentStation = stationsToVisit.top().second;
+        stationsToVisit.pop();
+
+        if (currentDistance > distance[currentStation]) {
+            continue;
+        }
+
+        if (currentStation == destinationStation) {
+            break;
+        }
+
+        auto stationIterator = weightedAdjList.find(currentStation);
+        if (stationIterator == weightedAdjList.end()) {
+            continue;
+        }
+
+        for (const auto& route : stationIterator->second) {
+            const string& neighbor = route.first;
+            const int routeWeight = route.second;
+
+            if (distance[currentStation] + routeWeight < distance[neighbor]) {
+                distance[neighbor] = distance[currentStation] + routeWeight;
+                parent[neighbor] = currentStation;
+                stationsToVisit.push({distance[neighbor], neighbor});
+            }
+        }
+    }
+
+    if (distance[destinationStation] == numeric_limits<int>::max()) {
+        return {emptyRoute, 0};
+    }
+
+    vector<string> route;
+    string current = destinationStation;
+
+    while (true) {
+        route.push_back(current);
+
+        if (current == startStation) {
+            break;
+        }
+
+        current = parent[current];
+    }
+
+    reverse(route.begin(), route.end());
+    return {route, distance[destinationStation]};
 }
 
 void Graph::dfsHelper(const string& stationName, unordered_map<string, bool>& visited, vector<string>& traversalOrder) const {

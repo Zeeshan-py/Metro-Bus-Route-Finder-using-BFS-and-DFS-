@@ -1,26 +1,26 @@
-Shahdara,Niazi Chowk,1
-Niazi Chowk,Timber Market,1
-Timber Market,Azadi Chowk,1
-Azadi Chowk,Bhatti Chowk,1
-Bhatti Chowk,Katchery,1
-Katchery,Civil Secretariat,1
-Civil Secretariat,MAO College,1
-MAO College,Janazgah,1
-Janazgah,Qartaba Chowk,1
-Qartaba Chowk,Shama,1
-Shama,Ichhra,1
-Ichhra,Canal,1
-Canal,Qaddafi Stadium,1
-Qaddafi Stadium,Kalma Chowk,1
-Kalma Chowk,Model Town,1
-Model Town,Naseerabad,1
-Naseerabad,Ittefaq Hospital,1
-Ittefaq Hospital,Qainchi,1
-Qainchi,Ghazi Chowk,1
-Ghazi Chowk,Chungi Amar Sidhu,1
-Chungi Amar Sidhu,Kamahan,1
-Kamahan,Attari Saroba,1
-Attari Saroba,Nishtar,1
-Nishtar,Youhanabad,1
-Youhanabad,Dulu Khurd,1
-Dulu Khurd,Gajjumata,1
+Shahdara,Niazi Chowk,2200
+Niazi Chowk,Timber Market,560
+Timber Market,Azadi Chowk,1100
+Azadi Chowk,Bhatti Chowk,1200
+Bhatti Chowk,Katchery,630
+Katchery,Civil Secretariat,700
+Civil Secretariat,MAO College,900
+MAO College,Janazgah,1100
+Janazgah,Qartaba Chowk,700
+Qartaba Chowk,Shama,1200
+Shama,Ichhra,830
+Ichhra,Canal,1700
+Canal,Qaddafi Stadium,730
+Qaddafi Stadium,Kalma Chowk,1000
+Kalma Chowk,Model Town,700
+Model Town,Naseerabad,1300
+Naseerabad,Ittefaq Hospital,930
+Ittefaq Hospital,Qainchi,1800
+Qainchi,Ghazi Chowk,900
+Ghazi Chowk,Chungi Amar Sidhu,830
+Chungi Amar Sidhu,Kamahan,1100
+Kamahan,Atari Saroba,1200
+Atari Saroba,Nishtar Colony,1200
+Nishtar Colony,Youhanabad,830
+Youhanabad,Dulu Khurd,830
+Dulu Khurd,Gajjumata,830

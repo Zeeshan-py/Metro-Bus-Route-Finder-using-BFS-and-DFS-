@@ -43,6 +43,29 @@ void printRoute(const std::vector<std::string>& route) {
     cout << '\n';
 }
 
+void printWeightedRoute(const pair<vector<string>, int>& result) {
+    const vector<string>& route = result.first;
+    const int totalMeters = result.second;
+
+    if (route.empty()) {
+        cout << "No route found between the selected stations.\n";
+        return;
+    }
+
+    cout << "Shortest weighted route (" << route.size() << " stations, "
+         << totalMeters << " meters): ";
+
+    for (size_t i = 0; i < route.size(); ++i) {
+        cout << route[i];
+
+        if (i + 1 < route.size()) {
+            cout << " -> ";
+        }
+    }
+
+    cout << '\n';
+}
+
 void printBanner() {
     cout << "\n========================================\n";
     cout << "   METRO BUS ROUTE FINDER - LAHORE\n";
@@ -87,20 +110,20 @@ bool promptForStation(const std::string& prompt, std::string& station) {
 }
 
 bool promptForWeight(int& weight) {
-    cout << "Enter route weight: ";
+    cout << "Enter route weight in meters: ";
     cin >> weight;
 
     if (cin.fail()) {
         cin.clear();
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        cout << "Invalid weight. Please enter a positive number.\n";
+        cout << "Invalid weight. Please enter a positive distance in meters.\n";
         return false;
     }
 
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     if (weight <= 0) {
-        cout << "Weight must be greater than 0.\n";
+        cout << "Distance must be greater than 0 meters.\n";
         return false;
     }
 
@@ -118,11 +141,12 @@ int main() {
         std::cout << "1. Add Station\n";
         std::cout << "2. Connect Stations\n";
         std::cout << "3. Display Metro Map\n";
-        std::cout << "4. Find Shortest Route (BFS)\n";
-        std::cout << "5. Show DFS Traversal\n";
-        std::cout << "6. Save Data\n";
-        std::cout << "7. Reload Data\n";
-        std::cout << "8. Exit\n";
+        std::cout << "4. Find Shortest Weighted Route (Dijkstra)\n";
+        std::cout << "5. Find Fewest Stops Route (BFS)\n";
+        std::cout << "6. Show DFS Traversal\n";
+        std::cout << "7. Save Data\n";
+        std::cout << "8. Reload Data\n";
+        std::cout << "9. Exit\n";
         std::cout << "Enter your choice: ";
 
         std::cin >> choice;
@@ -201,27 +225,51 @@ int main() {
             }
 
             const clock_t startTime = clock();
+            printWeightedRoute(metroGraph.findShortestWeightedRoute(start, destination));
+            const clock_t endTime = clock();
+            printElapsedTime("Dijkstra", startTime, endTime);
+            break;
+        }
+        case 5:
+        {
+            std::string start;
+            std::string destination;
+
+            if (!promptForStation("Enter start station: ", start)) {
+                break;
+            }
+
+            if (!promptForStation("Enter destination station: ", destination)) {
+                break;
+            }
+
+            if (!metroGraph.hasStation(start) || !metroGraph.hasStation(destination)) {
+                std::cout << "Invalid station name. Please check the metro map and try again.\n";
+                break;
+            }
+
+            const clock_t startTime = clock();
             printRoute(metroGraph.findShortestRoute(start, destination));
             const clock_t endTime = clock();
             printElapsedTime("BFS", startTime, endTime);
             break;
         }
-        case 5: {
+        case 6: {
             const clock_t startTime = clock();
             printTraversal(metroGraph.depthFirstTraversal());
             const clock_t endTime = clock();
             printElapsedTime("DFS", startTime, endTime);
             break;
         }
-        case 6:
+        case 7:
             metroGraph.saveRoutesToFile(kDataFile);
             break;
-        case 7:
+        case 8:
             if (metroGraph.loadRoutesFromFile(kDataFile)) {
                 std::cout << "Metro data reloaded from file.\n";
             }
             break;
-        case 8:
+        case 9:
             std::cout << "Exiting program.\n";
             break;
         default:
@@ -229,7 +277,7 @@ int main() {
             break;
         }
 
-    } while (choice != 8);
+    } while (choice != 9);
 
     return 0;
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lahore Metro Route Finder GUI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="app-shell">
+        <aside class="control-panel">
+            <div class="brand">
+                <div class="brand-mark">M</div>
+                <div>
+                    <h1>Lahore Metro Route Finder</h1>
+                    <p>Separate AI-generated GUI bonus</p>
+                </div>
+            </div>
+
+            <label for="fromStation">From station</label>
+            <select id="fromStation"></select>
+
+            <label for="toStation">To station</label>
+            <select id="toStation"></select>
+
+            <div class="mode-group" aria-label="Route mode">
+                <button id="distanceMode" class="active" type="button">Shortest distance</button>
+                <button id="stopsMode" type="button">Fewest stops</button>
+            </div>
+
+            <button id="findRoute" class="primary-action" type="button">Find Route</button>
+
+            <section class="result-box" aria-live="polite">
+                <p class="result-label">Selected route</p>
+                <h2 id="routeTitle">Shahdara to Gajjumata</h2>
+                <div class="metric-grid">
+                    <div>
+                        <span id="distanceValue">27.00 km</span>
+                        <small>Total distance</small>
+                    </div>
+                    <div>
+                        <span id="stationValue">27</span>
+                        <small>Stations</small>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <section class="map-panel">
+            <div class="map-header">
+                <div>
+                    <h2>Metro Corridor</h2>
+                    <p>Weighted graph visualized from the same station data idea used by the C++ project.</p>
+                </div>
+                <div class="legend">
+                    <span><i class="dot active-dot"></i>Route</span>
+                    <span><i class="dot"></i>Station</span>
+                </div>
+            </div>
+
+            <div id="routeLine" class="route-line"></div>
+
+            <div class="details-grid">
+                <section>
+                    <h3>Route path</h3>
+                    <ol id="routeSteps" class="route-steps"></ol>
+                </section>
+
+                <section>
+                    <h3>Segment distances</h3>
+                    <div id="segmentTable" class="segment-table"></div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -49,6 +49,10 @@ public:
     vector<string> findShortestRoute(const string& startStation,
                                      const string& destinationStation) const;
 
+    // Finds the minimum-distance route between two stations using Dijkstra's Algorithm.
+    pair<vector<string>, int> findShortestWeightedRoute(const string& startStation,
+                                                        const string& destinationStation) const;
+
     // Returns a full DFS traversal of the metro graph, including disconnected parts.
     vector<string> depthFirstTraversal() const;
 
