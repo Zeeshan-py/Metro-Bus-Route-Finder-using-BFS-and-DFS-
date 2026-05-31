@@ -45,10 +45,6 @@ public:
     // Saves the current metro graph to a text file using comma-separated routes.
     bool saveRoutesToFile(const string& fileName) const;
 
-    // Finds the shortest route between two stations using BFS.
-    vector<string> findShortestRoute(const string& startStation,
-                                     const string& destinationStation) const;
-
     // Finds the minimum-distance route between two stations using Dijkstra's Algorithm.
     pair<vector<string>, int> findShortestWeightedRoute(const string& startStation,
                                                         const string& destinationStation) const;

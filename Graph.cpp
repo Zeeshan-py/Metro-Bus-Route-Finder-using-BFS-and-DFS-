@@ -259,67 +259,6 @@ bool Graph::saveRoutesToFile(const string& fileName) const {
     return true;
 }
 
-// BFS time complexity: O(V + E), because each station and route can be processed once.
-// BFS space complexity: O(V), because the queue, visited map, and parent map can grow with stations.
-std::vector<string> Graph::findShortestRoute(const string& startStation, const string& destinationStation) const {
-    vector<string> emptyRoute;
-
-    if (!hasStation(startStation) || !hasStation(destinationStation)) {
-        return emptyRoute;
-    }
-
-    queue<string> stationsToVisit;
-    unordered_map<string, bool> visited;
-    unordered_map<string, string> parent;
-
-    stationsToVisit.push(startStation);
-    visited[startStation] = true;
-
-    while (!stationsToVisit.empty()) {
-        string currentStation = stationsToVisit.front();
-        stationsToVisit.pop();
-
-        if (currentStation == destinationStation) {
-            break;
-        }
-
-        auto stationIterator = weightedAdjList.find(currentStation);
-        if (stationIterator == weightedAdjList.end()) {
-            continue;
-        }
-
-        for (const auto& route : stationIterator->second) {
-            const string& neighbor = route.first;
-
-            if (visited.find(neighbor) == visited.end()) {
-                visited[neighbor] = true;
-                parent[neighbor] = currentStation;
-                stationsToVisit.push(neighbor);
-            }
-        }
-    }
-
-    if (visited.find(destinationStation) == visited.end()) {
-        return emptyRoute;
-    }
-
-    vector<string> route;
-    string current = destinationStation;
-
-    while (true) {
-        route.push_back(current);
-
-        if (current == startStation) {
-            break;
-        }
-
-        current = parent[current];
-    }
-
-    reverse(route.begin(), route.end());
-    return route;
-}
-
 pair<vector<string>, int> Graph::findShortestWeightedRoute(const string& startStation, const string& destinationStation) const {
     vector<string> emptyRoute;
 

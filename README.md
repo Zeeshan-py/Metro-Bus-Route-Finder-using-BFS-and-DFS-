@@ -1,10 +1,10 @@
-# Metro Bus Route Finder using Weighted Graph, Dijkstra, BFS and DFS
+# Metro Bus Route Finder using Weighted Graph, Dijkstra and DFS
 
-A C++ DSA project that models the Lahore Metro Bus System as an undirected weighted graph. Each station is a vertex, and each route between two stations is a bidirectional weighted edge. The project demonstrates graph representation, Dijkstra's Algorithm, BFS traversal, DFS traversal, file handling, STL containers, recursion, and object-oriented programming.
+A C++ DSA project that models the Lahore Metro Bus System as an undirected weighted graph. Each station is a vertex, and each route between two stations is a bidirectional weighted edge. The project demonstrates graph representation, Dijkstra's Algorithm, DFS traversal, file handling, STL containers, recursion, and object-oriented programming.
 
 ## Project Objective
 
-The objective of this project is to build a route finder for a metro bus network. The C++ system allows users to add stations, connect stations with distance weights, save/load route data, display the graph, find the minimum-distance route using Dijkstra's Algorithm, find the fewest-stops route using BFS, and perform a full DFS traversal of the metro network.
+The objective of this project is to build a route finder for a metro bus network. The C++ system allows users to add stations, connect stations with distance weights, automatically save route data, display the graph, find the minimum-distance route using Dijkstra's Algorithm, and perform a full DFS traversal of the metro network.
 
 This project is suitable for a DSA course submission because it connects a real-world transport problem with core graph concepts.
 
@@ -16,7 +16,6 @@ This project is suitable for a DSA course submission because it connects a real-
 - Weighted graph storage
 - Adjacency list representation
 - Dijkstra's Algorithm
-- Breadth First Search
 - Depth First Search
 - Recursion
 - File handling
@@ -29,8 +28,8 @@ This project is suitable for a DSA course submission because it connects a real-
 |---|---|
 | `main.cpp` | Menu-driven console interface and user input handling |
 | `Graph.h` | Graph class declaration |
-| `Graph.cpp` | Graph class implementation, BFS, DFS, file handling, display logic |
-| `stations.txt` | Persistent metro station and route data |
+| `Graph.cpp` | Graph class implementation, Dijkstra, DFS, file handling, display logic |
+| `stations.txt` | Automatically saved metro station and route data |
 | `gui/` | Separate AI-generated GUI bonus interface |
 | `README.md` | Complete project report and documentation |
 
@@ -104,17 +103,16 @@ graph LR
 - Prevent duplicate routes
 - Reject self-routes such as `A -> A`
 - Store realistic station-to-station distance weights in meters
-- Load metro data from `stations.txt`
-- Save updated graph data to `stations.txt`
+- Load metro data from `stations.txt` at startup
+- Automatically save station and route updates to `stations.txt`
 - Find shortest route by distance using Dijkstra's Algorithm
-- Find fewest-stops route using BFS
 - Perform full DFS traversal, including disconnected components
 - Display adjacency-list map
 - Display simple ASCII-style map
 - Handle missing and invalid station names safely
 - Trim user input to avoid accidental duplicate names with spaces
 - Validate route weights while loading file data
-- Measure Dijkstra, BFS and DFS execution time
+- Measure Dijkstra and DFS execution time
 - Provide a separate static GUI bonus in `gui/`
 
 ## Menu Options
@@ -124,16 +122,13 @@ graph LR
 2. Connect Stations
 3. Display Metro Map
 4. Find Shortest Weighted Route (Dijkstra)
-5. Find Fewest Stops Route (BFS)
-6. Show DFS Traversal
-7. Save Data
-8. Reload Data
-9. Exit
+5. Show DFS Traversal
+6. Exit
 ```
 
 ## File Format
 
-The project uses `stations.txt` as persistent storage.
+The project uses `stations.txt` as automatic persistent storage. Data is loaded once when the program starts, and station/route changes are saved immediately after successful updates.
 
 Supported formats:
 
@@ -166,22 +161,6 @@ Steps:
 6. Stop when the destination is reached.
 7. Reconstruct the final minimum-distance route.
 
-## BFS Explanation
-
-BFS is used to find the route with the fewest number of station stops.
-
-Steps:
-
-1. Start from the source station.
-2. Push the source station into a queue.
-3. Mark it as visited.
-4. Visit neighboring stations level by level.
-5. Store each station's parent.
-6. Stop when the destination is found.
-7. Reconstruct the path using the parent map.
-
-Important note: BFS reads neighbors from the weighted graph, but it does not compare weight values. It finds the route with the fewest station-to-station hops. Dijkstra's Algorithm is used when the user wants the minimum-distance route.
-
 ## DFS Explanation
 
 DFS is used to traverse the graph deeply using recursion.
@@ -208,7 +187,7 @@ The project includes the following checks:
 - Self-routes are rejected.
 - Missing stations are rejected during manual route creation.
 - Invalid file weights are skipped.
-- BFS safely handles missing, isolated, same-source-destination, and unreachable station cases.
+- Dijkstra safely handles missing, isolated, same-source-destination, and unreachable station cases.
 - DFS uses visited tracking to avoid infinite recursion in cyclic graphs.
 
 ## Complexity Analysis
@@ -225,7 +204,6 @@ Let:
 | Check station | O(1) average | O(1) | Uses `unordered_map::find` |
 | Add weighted route | O(d) | O(1) | Vector scan prevents duplicate neighbors |
 | Dijkstra shortest route | O((V + E) log V) | O(V) | Finds minimum-distance route |
-| BFS fewest stops route | O(V + E) | O(V) | Finds shortest path by hop count |
 | DFS traversal | O(V + E) | O(V) | Includes recursion stack |
 | Load file | O(E * d) practical | O(V + E) | Each route checks for duplicates |
 | Save file | O(E log E) | O(E) | Uses `set` to keep saved routes unique |
@@ -292,9 +270,8 @@ DFS execution time: 0 ms
 - Clear graph-based modeling of a real transport system.
 - Correct undirected route insertion.
 - Correct Dijkstra logic for minimum-distance route finding.
-- Correct BFS route logic for minimum hop count.
 - Correct DFS traversal with disconnected graph coverage.
-- Persistent storage through file handling.
+- Automatic persistent storage through file handling.
 - Duplicate route prevention.
 - Single weighted adjacency list used across the graph.
 - Realistic station-to-station distance weights in meters.
@@ -316,8 +293,8 @@ DFS execution time: 0 ms
 - Add station suggestions for misspelled names.
 - Store latitude/longitude data for real map visualization.
 - Replace vector neighbor lists with `unordered_set` for faster duplicate checks.
-- Add unit tests for BFS, DFS, file parsing, duplicate routes, and invalid input.
+- Add unit tests for Dijkstra, DFS, file parsing, duplicate routes, and invalid input.
 
 ## Final Summary
 
-This project successfully demonstrates how a metro bus route network can be represented using graph data structures in C++. It implements station and route management, persistent file storage, Dijkstra minimum-distance search, BFS fewest-stops search, DFS traversal, duplicate prevention, basic validation, and a separate GUI bonus interface.
+This project successfully demonstrates how a metro bus route network can be represented using graph data structures in C++. It implements station and route management, automatic persistent file storage, Dijkstra minimum-distance search, DFS traversal, duplicate prevention, basic validation, and a separate GUI bonus interface.
