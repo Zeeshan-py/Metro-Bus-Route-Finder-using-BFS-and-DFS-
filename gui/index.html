@@ -23,12 +23,28 @@
             <label for="toStation">To station</label>
             <select id="toStation"></select>
 
-            <div class="mode-group" aria-label="Route mode">
-                <button id="distanceMode" class="active" type="button">Shortest distance</button>
-                <button id="stopsMode" type="button">Fewest stops</button>
-            </div>
-
             <button id="findRoute" class="primary-action" type="button">Find Route</button>
+
+            <section class="editor-panel">
+                <h2>Network Editor</h2>
+                <p>Add stations and weighted routes for demo changes.</p>
+
+                <label for="newStation">New station</label>
+                <input id="newStation" type="text" placeholder="Enter station name">
+                <button id="addStation" class="secondary-action" type="button">Add Station</button>
+
+                <label for="routeFrom">Connect from</label>
+                <select id="routeFrom"></select>
+
+                <label for="routeTo">Connect to</label>
+                <select id="routeTo"></select>
+
+                <label for="routeWeight">Distance in meters</label>
+                <input id="routeWeight" type="number" min="1" placeholder="Example: 850">
+                <button id="connectStations" class="secondary-action" type="button">Connect Stations</button>
+
+                <p id="editorStatus" class="editor-status"></p>
+            </section>
 
             <section class="result-box" aria-live="polite">
                 <p class="result-label">Selected route</p>

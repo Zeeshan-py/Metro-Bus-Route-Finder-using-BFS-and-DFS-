@@ -89,6 +89,7 @@ label {
 }
 
 select,
+input,
 button {
     width: 100%;
     min-height: 44px;
@@ -103,22 +104,8 @@ select {
     padding: 0 12px;
 }
 
-.mode-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 20px;
-}
-
-.mode-group button {
-    cursor: pointer;
-}
-
-.mode-group .active {
-    border-color: var(--green);
-    background: var(--soft-green);
-    color: var(--green-dark);
-    font-weight: 700;
+input {
+    padding: 0 12px;
 }
 
 .primary-action {
@@ -128,6 +115,43 @@ select {
     border-color: var(--green);
     font-weight: 800;
     cursor: pointer;
+}
+
+.secondary-action {
+    margin-top: 10px;
+    border-color: var(--green);
+    color: var(--green-dark);
+    background: var(--soft-green);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.editor-panel {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.editor-panel h2 {
+    font-size: 16px;
+}
+
+.editor-panel p {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.editor-status {
+    min-height: 20px;
+    margin-top: 12px;
+    color: var(--green-dark);
+    font-weight: 700;
+}
+
+.editor-status.error {
+    color: var(--red);
 }
 
 .result-box {

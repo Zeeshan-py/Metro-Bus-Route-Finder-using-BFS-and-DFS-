@@ -264,8 +264,9 @@ gui/index.html
 The GUI includes:
 
 - station dropdowns
-- shortest-distance mode using Dijkstra
-- fewest-stops mode using BFS
+- shortest-distance route finding using Dijkstra
+- Add Station control for demo graph updates
+- Connect Stations control with distance in meters
 - route line visualization
 - total distance in kilometers
 - segment distance table

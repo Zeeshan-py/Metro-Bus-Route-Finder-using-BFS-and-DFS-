@@ -57,20 +57,18 @@ const edges = [
     ["Dulu Khurd", "Gajjumata", 830]
 ];
 
-let mode = "distance";
-
 const graph = new Map();
-stations.forEach((station) => graph.set(station, []));
-edges.forEach(([from, to, weight]) => {
-    graph.get(from).push({ station: to, weight });
-    graph.get(to).push({ station: from, weight });
-});
 
 const fromSelect = document.getElementById("fromStation");
 const toSelect = document.getElementById("toStation");
-const distanceMode = document.getElementById("distanceMode");
-const stopsMode = document.getElementById("stopsMode");
 const findRoute = document.getElementById("findRoute");
+const newStationInput = document.getElementById("newStation");
+const addStationButton = document.getElementById("addStation");
+const routeFromSelect = document.getElementById("routeFrom");
+const routeToSelect = document.getElementById("routeTo");
+const routeWeightInput = document.getElementById("routeWeight");
+const connectStationsButton = document.getElementById("connectStations");
+const editorStatus = document.getElementById("editorStatus");
 const routeLine = document.getElementById("routeLine");
 const routeSteps = document.getElementById("routeSteps");
 const segmentTable = document.getElementById("segmentTable");
@@ -82,7 +80,22 @@ function formatKm(meters) {
     return `${(meters / 1000).toFixed(2)} km`;
 }
 
-function fillSelect(select, selectedStation) {
+function rebuildGraph() {
+    graph.clear();
+    stations.forEach((station) => graph.set(station, []));
+    edges.forEach(([from, to, weight]) => {
+        if (!graph.has(from)) {
+            graph.set(from, []);
+        }
+        if (!graph.has(to)) {
+            graph.set(to, []);
+        }
+        graph.get(from).push({ station: to, weight });
+        graph.get(to).push({ station: from, weight });
+    });
+}
+
+function fillSelect(select, selectedStation = select.value) {
     select.innerHTML = "";
     stations.forEach((station) => {
         const option = document.createElement("option");
@@ -91,6 +104,18 @@ function fillSelect(select, selectedStation) {
         option.selected = station === selectedStation;
         select.appendChild(option);
     });
+}
+
+function refreshSelects() {
+    fillSelect(fromSelect, fromSelect.value || "Shahdara");
+    fillSelect(toSelect, toSelect.value || "Gajjumata");
+    fillSelect(routeFromSelect, routeFromSelect.value || "Shahdara");
+    fillSelect(routeToSelect, routeToSelect.value || "Gajjumata");
+}
+
+function setEditorStatus(message, isError = false) {
+    editorStatus.textContent = message;
+    editorStatus.className = isError ? "editor-status error" : "editor-status";
 }
 
 function dijkstra(start, destination) {
@@ -130,31 +155,6 @@ function dijkstra(start, destination) {
     return buildPath(start, destination, parent, distance.get(destination));
 }
 
-function bfs(start, destination) {
-    const queue = [start];
-    const visited = new Set([start]);
-    const parent = new Map();
-
-    while (queue.length > 0) {
-        const current = queue.shift();
-        if (current === destination) {
-            break;
-        }
-
-        graph.get(current).forEach((route) => {
-            if (!visited.has(route.station)) {
-                visited.add(route.station);
-                parent.set(route.station, current);
-                queue.push(route.station);
-            }
-        });
-    }
-
-    const result = buildPath(start, destination, parent, visited.has(destination) ? 0 : Infinity);
-    result.distance = calculateDistance(result.path);
-    return result;
-}
-
 function buildPath(start, destination, parent, distance) {
     if (!Number.isFinite(distance)) {
         return { path: [], distance: 0 };
@@ -172,17 +172,6 @@ function buildPath(start, destination, parent, distance) {
     }
 
     return { path: path.reverse(), distance };
-}
-
-function calculateDistance(path) {
-    let total = 0;
-    for (let i = 0; i + 1 < path.length; i++) {
-        const from = path[i];
-        const to = path[i + 1];
-        const route = graph.get(from).find((item) => item.station === to);
-        total += route ? route.weight : 0;
-    }
-    return total;
 }
 
 function renderRouteLine(path) {
@@ -221,7 +210,7 @@ function renderRouteDetails(path) {
 function updateRoute() {
     const start = fromSelect.value;
     const destination = toSelect.value;
-    const result = mode === "distance" ? dijkstra(start, destination) : bfs(start, destination);
+    const result = dijkstra(start, destination);
 
     routeTitle.textContent = `${start} to ${destination}`;
     distanceValue.textContent = formatKm(result.distance);
@@ -230,24 +219,65 @@ function updateRoute() {
     renderRouteDetails(result.path);
 }
 
-distanceMode.addEventListener("click", () => {
-    mode = "distance";
-    distanceMode.classList.add("active");
-    stopsMode.classList.remove("active");
-    updateRoute();
-});
+function addStation() {
+    const station = newStationInput.value.trim();
 
-stopsMode.addEventListener("click", () => {
-    mode = "stops";
-    stopsMode.classList.add("active");
-    distanceMode.classList.remove("active");
+    if (!station) {
+        setEditorStatus("Station name cannot be empty.", true);
+        return;
+    }
+
+    if (stations.includes(station)) {
+        setEditorStatus("Station already exists.", true);
+        return;
+    }
+
+    stations.push(station);
+    graph.set(station, []);
+    newStationInput.value = "";
+    refreshSelects();
+    renderRouteLine([]);
+    setEditorStatus(`${station} added. Connect it to the network next.`);
+}
+
+function connectStations() {
+    const from = routeFromSelect.value;
+    const to = routeToSelect.value;
+    const weight = Number(routeWeightInput.value);
+
+    if (from === to) {
+        setEditorStatus("A station cannot be connected to itself.", true);
+        return;
+    }
+
+    if (!Number.isInteger(weight) || weight <= 0) {
+        setEditorStatus("Distance must be a positive number in meters.", true);
+        return;
+    }
+
+    const existingRoute = edges.find((edge) => {
+        return (edge[0] === from && edge[1] === to) || (edge[0] === to && edge[1] === from);
+    });
+
+    if (existingRoute) {
+        existingRoute[2] = weight;
+        setEditorStatus(`Route updated: ${from} to ${to} (${formatKm(weight)}).`);
+    } else {
+        edges.push([from, to, weight]);
+        setEditorStatus(`Route added: ${from} to ${to} (${formatKm(weight)}).`);
+    }
+
+    routeWeightInput.value = "";
+    rebuildGraph();
     updateRoute();
-});
+}
 
 findRoute.addEventListener("click", updateRoute);
 fromSelect.addEventListener("change", updateRoute);
 toSelect.addEventListener("change", updateRoute);
+addStationButton.addEventListener("click", addStation);
+connectStationsButton.addEventListener("click", connectStations);
 
-fillSelect(fromSelect, "Shahdara");
-fillSelect(toSelect, "Gajjumata");
+rebuildGraph();
+refreshSelects();
 updateRoute();
